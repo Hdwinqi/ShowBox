@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>根据时间列表排序</title>
+</head>
+<body>
+<button id="btnClick">点击</button>
+<ul id="wrap">
+    <li><span>[8:30]</span><span>asdfsfsdf</span></li>
+    <li><span>[9:00]</span><span>asdfsfsdf</span></li>
+</ul>
+  <script src="jquery-1.8.2.min.js"></script>
+  <script>
+      $(function(){
+          //debugger;
+          $('#btnClick')[0].onclick = function(){
+              var wrap = $('#wrap');
+              var _time = [
+                   {time:'12:38',address:"asfasf"},
+                   {time:'8:30',address:"asfasf"},
+                   {time:'00:00',address:"asfasf"},
+                   {time:'16:40',address:"asfasf"},
+                   {time:'23:12',address:"asfasf"},
+                  {time:'5:30',address:"asfasf"},
+                    {time:'9:30',address:"asfasf"},
+                  {time:'01:12',address:"asfasf"},
+                  {time:'2:00',address:"asfasf"},
+              ];
+              var i = Math.floor(Math.random()*_time.length);
+              console.log(i);
+              bbcc(wrap,'asc',_time[i]);  //_time[i]要传的动态值对象
+          };
+
+          function bbcc(obj,sort,data) {
+              var setElem = {};   //存储获取动态数据对象
+              setElem['s'] = '<li><span>['+data.time+']</span><span>'+ data.address +'</span></li>';
+              setElem['t'] = data.time;
+              var arr = [];
+              var html = '';
+              arr.push(setElem);
+              var lis = obj.children();  //具体项目中需要根据Dom结构改变
+              for(var j= 0,l=lis.length; j<l; j++){
+                  var cache = {};
+                  cache['s'] = lis[j].outerHTML;
+                  cache['t']= $(lis[j]).children().first().text().replace(/\[|\]/gi,''); //具体项目中需要根据Dom结构改变
+                  arr.push(cache);
+              }
+              //console.log(arr);
+              if(sort == 'desc') {            //按时间降
+                  arr.sort(function(a,b){
+                      return timeParse(a['t'])-timeParse(b['t']);
+                  });
+              } else if (sort == 'asc') {     //按时间升
+                  arr.sort(function(a,b){
+                      return timeParse(b['t'])-timeParse(a['t']);
+                  });
+              }
+              // console.log(arr);
+
+              for(var n=0;n<arr.length;n++){
+                  html += arr[n]['s'];
+              }
+              obj.html(html);
+          }
+
+          function timeParse(time) {          //日期转换
+              if(!time) {
+                  return;
+              }
+              time = time.replace(/\-/g, '\/');
+              //getTime()
+              return new Date(parseInt(time,10)).getTime();
+          }
+          /* var aa = new Date('2016/2/8 0:30:00'.replace(/\-/g, '\/'));
+           var bb = new Date('2016/2/8 8:30:00'.replace(/\-/g, '\/'));
+           var cc = new Date('2016/2/8 9:30:00'.replace(/\-/g, '\/'));
+           var dd = new Date('2016/2/8 12:30:00'.replace(/\-/g, '\/'));
+           var ee = new Date('2016/2/8 16:30:00'.replace(/\-/g, '\/'));
+           var ff = new Date('2016/2/8 23:30:00'.replace(/\-/g, '\/'));
+           //Date.parse(bb)
+           console.log('aa:'+ Date.parse(bb));
+           console.log('bb:'+ Date.parse(bb));
+           console.log('cc:'+ Date.parse(cc));
+           console.log('dd:'+ Date.parse(dd));
+           console.log('ee:'+ Date.parse(ee));
+           console.log('ff:'+ Date.parse(ff));*/
+
+          //$('#wrap').
+      });
+  </script>
+
+
+</body>
+</html>

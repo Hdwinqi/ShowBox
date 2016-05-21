@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kkkk</title>
+    <style>
+        #targetDiv{
+            width:300px;
+            height:200px;
+            background:#ff2222;
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+   <button id="btnClick">点击</button>
+   <ul id="wrap">
+       <li><span>[8:30]</span><span>asdfsfsdf</span></li>
+       <li><span>[9:00]</span><span>asdfsfsdf</span></li>
+   </ul>
+   <a id ="kk" href="javascript:void(0);" data-shown={interactive:'dialogBox',targetLayer:'#targetDiv',animateClass:'gh',callBackFn:fun,beforeFn:fun2}>点我1</a>
+   <div id="targetDiv"  style="display:none;">我是一个兵 <a href="javascript:void(0);" class="close-js">qqqqqqqqqq</a></div>
+
+
+   <a id ="kkY" href="javascript:void(0);">点我2</a>
+   <div id="targetDivV"  style="display:none;">kakdfksa;fjs;fa;sf <a href="javascript:void(0);" class="close-js">X</a></div>
+
+
+   <script src="ShowBox.js"></script>
+   <script>
+       function fun(){
+           alert("ddddddddddddddddd");
+       }
+       function fun2(){
+           alert("rrrrrrrrrrrrrtttttttttttttt");
+       }
+       $('#kk').on('click',function(evt){
+           var that= this;
+           new ShowBox(that,evt);
+           evt.stopPropagation();
+       });
+       $('#kkY').on('click',function(evt){
+           var that= this;
+           new ShowBox(that,evt,{interactive:'dropMenu',targetLayer:'#targetDivV',animate:'gh',callBackFn:fun,beforeFn:fun2});
+          return false;
+       })
+
+   </script>
+</body>
+</body>
+</html>
