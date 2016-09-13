@@ -52,7 +52,7 @@ var ShowBox =(function(w,doc,$){
         this.evtType =evt.type;
         this.opts = opts;
         this.obj = getDom(obj);
-        this.default = { maskLayer:false, speed:300,animate : false, className:undefined };
+        this.defaults = { maskLayer:false, speed:300,animate : false, className:undefined };
         this.maskLayer = $('<div id="shownBg" class="shown-bg container-fluid"></div>');
         this.int();
     };
@@ -115,7 +115,7 @@ var ShowBox =(function(w,doc,$){
                 evt  = self.evtType,
                 targetLayer = getDom(opt.targetLayer),
                 publicMethod = self.publicMethod,
-                setting = $.extend({},self.default, opt);
+                setting = $.extend({},self.defaults, opt);
             if(targetLayer.length == 0) return;
             publicMethod.callBack(setting.beforeFn,obj,targetLayer); //执行前回调，通常用于装载数据
 
