@@ -17,6 +17,7 @@
          *              className:                         //下拉表列点击对象变化样式
          *       }
  *  Created by Qi.Huang on 15-4-7.
+ *  Update on 2016-10-18
  */
 
 define(['jquery'],function($){
