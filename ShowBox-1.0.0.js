@@ -1,4 +1,4 @@
-//弹层
+
 /** For show details plugin
  *      支持可选择是弹窗和点击下拉显示两种方式；
  *      <!--<button class="menu-js" data-shown={ interactive:'dialogBox', targetLayer:'#targetID',animateClass:className, callBackFn:fun,beforeFn:fun }></button>-->
