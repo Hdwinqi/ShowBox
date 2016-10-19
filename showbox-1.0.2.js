@@ -116,18 +116,19 @@ define(['jquery'],function($){
                     //isToCallBack = false;
                     var hideBg = function(){
                         targetLayer.animate({
-                            height: ['hide', 'swing'],
-                            width: ['hide', 'swing'],
-                            opacity: ['hide', 'swing']} ,300, 'easeInQuad');
+                            height: ['toggle', 'swing'],
+                            width: ['toggle', 'swing'],
+                            opacity: ['hide', 'swing']} ,200, 'easeOutQuart');
                         if (getDom("shownBg").length>0 && getDom("shownBg").is(':visible')) {
-                            getDom("shownBg").animate({opacity: ['hide', 'swing']},300, 'easeInQuad');
+                            getDom("shownBg").animate({opacity: ['hide', 'swing']},200, 'easeOutQuart');
                         }
                     };
                     var normalHide = function(){
                         targetLayer.hide();
                         getDom("shownBg").hide();
                     };
-                    sanimate ? hideBg() : normalHide();
+                    sanimate ?
+                        hideBg() : normalHide();
                     if (callBack && typeof callBack === 'function') {
                         callBack();
                     }
@@ -205,14 +206,14 @@ define(['jquery'],function($){
                             body.append(mask);
                             body.append(targetLayer);
                         }
-                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},200, 'swing') : getDom("shownBg").show();
+                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},200, 'easeInQuad') : getDom("shownBg").show();
                     }
                     targetLayer.removeAttr('style').css(targetCss);
                     setting.animate ?
                     targetLayer.animate({
                         height: ['toggle', 'swing'],
                         width: ['toggle', 'swing'],
-                        opacity: ['show', 'swing']},200, 'swing', function(){
+                        opacity: ['show', 'swing']},200, 'easeInQuad', function(){
                         publicMethod.callBack(setting.callBackFn, obj, targetLayer);
                     }) : targetLayer.show();
                         //isToCallBack = true;
