@@ -1,4 +1,4 @@
-
+//弹层
 /** For show details plugin
  *      支持可选择是弹窗和点击下拉显示两种方式；
  *      <!--<button class="menu-js" data-shown={ interactive:'dialogBox', targetLayer:'#targetID',animateClass:className, callBackFn:fun,beforeFn:fun }></button>-->
@@ -8,6 +8,7 @@
          *               targetLayer:'targetID',            //目标层ID
          *               beforeFn:fun                       //执行前回回调
          *               callBackFn : fun                   //执行后回调
+         *               lockScroll: boolean                //是否锁定滚动条
          *   }
  *      或者 new ShowBox('#ID',{ interactive:'dialogBox', targetLayer:'#targetID',animateClass:className, callBackFn:fun,beforeFn:fun  })
  *      支持可选参数：{
@@ -17,7 +18,6 @@
          *              className:                         //下拉表列点击对象变化样式
          *       }
  *  Created by Qi.Huang on 15-4-7.
- *  Update on 2016-10-18
  */
 
 define(['jquery'],function($){
@@ -115,19 +115,19 @@ define(['jquery'],function($){
                 targetLayer.off('click.a').on('click.a','.close-js',function(e){
                     //isToCallBack = false;
                     var hideBg = function(){
+                        targetLayer.animate({
+                            height: ['hide', 'swing'],
+                            width: ['hide', 'swing'],
+                            opacity: ['hide', 'swing']} ,300, 'easeInQuad');
                         if (getDom("shownBg").length>0 && getDom("shownBg").is(':visible')) {
-                            getDom("shownBg").animate({opacity: ['hide', 'swing']},100, 'easeInQuad');
+                            getDom("shownBg").animate({opacity: ['hide', 'swing']},300, 'easeInQuad');
                         }
                     };
                     var normalHide = function(){
                         targetLayer.hide();
                         getDom("shownBg").hide();
                     };
-                    sanimate ?
-                    targetLayer.animate({
-                        height: ['hide', 'swing'],
-                        width: ['hide', 'swing'],
-                        opacity: ['hide', 'swing']} ,300, 'easeInQuad',hideBg) : normalHide();
+                    sanimate ? hideBg() : normalHide();
                     if (callBack && typeof callBack === 'function') {
                         callBack();
                     }
@@ -153,8 +153,7 @@ define(['jquery'],function($){
                     var body = $('body');
                     var clientH =body.actual('outerHeight'), clientW = $(window).actual('width');
                     var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;  //页面文档顶部距离视窗顶部（即滚动高度）距离
-                    scrollTop += $(window).actual('height')/2;
-                    var mt = -targetLayer.actual('outerHeight')/2;
+                    scrollTop = scrollTop + $(window).actual('height')/2 - targetLayer.actual('outerHeight')/2;
                     var styleOpts = {
                         'height': clientH + 'px',
                         'width' : clientW + 'px',
@@ -173,8 +172,8 @@ define(['jquery'],function($){
                         'bottom:': '0',
                         'right' : '0',
                         'margin-left': 'auto',
-                        'margin-right': 'auto',
-                        'margin-top' : mt
+                        'margin-right': 'auto'
+                        /*'margin-top' : mt*/
                     };
 
                     if (setting.animateClass && typeof setting.animateClass === 'string'){
@@ -206,14 +205,14 @@ define(['jquery'],function($){
                             body.append(mask);
                             body.append(targetLayer);
                         }
-                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},200, 'easeInQuad') : getDom("shownBg").show();
+                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},200, 'swing') : getDom("shownBg").show();
                     }
                     targetLayer.removeAttr('style').css(targetCss);
                     setting.animate ?
                     targetLayer.animate({
                         height: ['toggle', 'swing'],
                         width: ['toggle', 'swing'],
-                        opacity: ['show', 'swing']},500, 'easeInQuad', function(){
+                        opacity: ['show', 'swing']},200, 'swing', function(){
                         publicMethod.callBack(setting.callBackFn, obj, targetLayer);
                     }) : targetLayer.show();
                         //isToCallBack = true;
