@@ -116,11 +116,12 @@ define(['jquery'],function($){
                     //isToCallBack = false;
                     var hideBg = function(){
                         targetLayer.animate({
-                            height: ['toggle', 'swing'],
-                            width: ['toggle', 'swing'],
-                            opacity: ['hide', 'swing']} ,200, 'easeOutQuart');
+                            width: 'toggle',
+                            height: 'toggle',
+                            opacity: 'toggle'
+                           } ,200, 'easeOutExpo');
                         if (getDom("shownBg").length>0 && getDom("shownBg").is(':visible')) {
-                            getDom("shownBg").animate({opacity: ['hide', 'swing']},200, 'easeOutQuart');
+                            getDom("shownBg").animate({opacity: ['hide', 'swing']},200, 'easeOutExpo');
                         }
                     };
                     var normalHide = function(){
@@ -197,7 +198,18 @@ define(['jquery'],function($){
                     if (setting.lockScroll) {
                         lockScroll();
                     }
-
+                   function shownBgAnimation () {
+                        getDom("shownBg").animate({
+                            opacity: 'show' },200, 'easeOutExpo')
+                    }
+                   function targetLayerAnimation () {
+                        targetLayer.animate({
+                            width: 'toggle',
+                            height: 'toggle',
+                            opacity: 'toggle'},200, 'easeInExpo', function(){
+                            publicMethod.callBack(setting.callBackFn, obj, targetLayer);
+                        })
+                    }
                     if(setting.maskLayer && setting.maskLayer == true){
                         var mask = this.maskLayer;
                         mask.removeAttr('style').css(styleOpts);
@@ -206,17 +218,10 @@ define(['jquery'],function($){
                             body.append(mask);
                             body.append(targetLayer);
                         }
-                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},1, 'easeInQuad') : getDom("shownBg").show();
+                        setting.animate ? shownBgAnimation() : getDom("shownBg").show();
                     }
                     targetLayer.removeAttr('style').css(targetCss);
-                    setting.animate ?
-                    targetLayer.animate({
-                        height: ['toggle', 'swing'],
-                        width: ['toggle', 'swing'],
-                        opacity: ['show', 'swing']},200, 'easeInQuad', function(){
-                        publicMethod.callBack(setting.callBackFn, obj, targetLayer);
-                    }) : targetLayer.show();
-                        //isToCallBack = true;
+                    setting.animate ? targetLayerAnimation() : targetLayer.show();
                     publicMethod.closeFn(targetLayer, unlockScroll, setting.animate);
                     break;
 
