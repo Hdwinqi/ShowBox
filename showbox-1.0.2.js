@@ -202,11 +202,11 @@ define(['jquery'],function($){
                         var mask = this.maskLayer;
                         mask.removeAttr('style').css(styleOpts);
                         //targetLayer.removeAttr('style').css(targetCss);
-                        if( targetLayer.parent()[0].nodeName !="BODY" &&  mask.parent()[0] === undefined ){
+                        if( targetLayer.parent()[0].nodeName !="BODY" &&  $('#shownBg').length === 0 ){
                             body.append(mask);
                             body.append(targetLayer);
                         }
-                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},200, 'easeInQuad') : getDom("shownBg").show();
+                        setting.animate ? getDom("shownBg").animate({opacity: ['show', 'swing']},1, 'easeInQuad') : getDom("shownBg").show();
                     }
                     targetLayer.removeAttr('style').css(targetCss);
                     setting.animate ?
