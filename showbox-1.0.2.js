@@ -17,7 +17,28 @@
          *              animate : true                     //是否需要动画
          *              className:                         //下拉表列点击对象变化样式
          *       }
- *  Created by Qi.Huang on 15-4-7.
+ *      使用方法
+ *       var openSchoolLayer = function (e) {
+                var that  = $(this);
+                new ShowBox(that, e,{
+                    interactive:'dialogBox',
+                    targetLayer:'#schoolPanel',
+                    maskLayer:true,
+                    animate : true,
+                    //className:'on',
+                    beforeFn: function(){                                //数据加载前回调
+                        //alert('1');
+                    },
+                    callBackFn: function(){                             //数据加载后回调
+                       //alert('2');
+                    }
+                });
+                //isSelectSchool = true;
+                e.stopPropagation();
+            };
+         $('#school').on('click',openSchoolLayer);
+ *
+ *  Created by Qi.Huang on 16-10-21.
  */
 
 define(['jquery'],function($){
@@ -118,18 +139,19 @@ define(['jquery'],function($){
                         targetLayer.animate({
                             width: 'toggle',
                             height: 'toggle',
+                            left:'+='+ targetLayer.actual('outerWidth')/ 2 +'px',
+                            top:'+='+ targetLayer.actual('outerHeight')/ 2 +'px',
                             opacity: 'toggle'
                            } ,200, 'easeOutExpo');
                         if (getDom("shownBg").length>0 && getDom("shownBg").is(':visible')) {
-                            getDom("shownBg").animate({opacity: ['hide', 'swing']},200, 'easeOutExpo');
+                            getDom("shownBg").animate({opacity: ['hide', 'swing']},1, 'easeOutExpo');
                         }
                     };
                     var normalHide = function(){
                         targetLayer.hide();
                         getDom("shownBg").hide();
                     };
-                    sanimate ?
-                        hideBg() : normalHide();
+                    sanimate ? hideBg() : normalHide();
                     if (callBack && typeof callBack === 'function') {
                         callBack();
                     }
@@ -153,9 +175,9 @@ define(['jquery'],function($){
                     //var isToCallBack = false,
                     //debugger;
                     var body = $('body');
-                    var clientH =body.actual('outerHeight'), clientW = $(window).actual('width');
+                    var clientH =body.actual('outerHeight'), clientW = $(window).actual('width'),tH = targetLayer.actual('outerHeight')/ 2, tW = targetLayer.actual('outerWidth')/2;
                     var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;  //页面文档顶部距离视窗顶部（即滚动高度）距离
-                    scrollTop = scrollTop + $(window).actual('height')/2 - targetLayer.actual('outerHeight')/2;
+                    scrollTop = scrollTop + $(window).actual('height')/2 - tH;
                     var styleOpts = {
                         'height': clientH + 'px',
                         'width' : clientW + 'px',
@@ -163,8 +185,8 @@ define(['jquery'],function($){
                         'left' : '0',
                         'top'  : '0',
                         'z-index' : '199',
-                        'background': 'rgba(0,0,0,.6)',
-                        'filter': 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000)'
+                        'background': 'rgba(0,0,0,.4)',
+                        'filter': 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#66000000,endColorstr=#66000000)'
                     },
                     targetCss = {
                         'position' : 'absolute',
@@ -177,6 +199,11 @@ define(['jquery'],function($){
                         'margin-right': 'auto'
                         /*'margin-top' : mt*/
                     };
+
+                    if(setting.animate) {
+                        targetCss.left = tW + 'px';
+                        targetCss.top = (scrollTop + tH) + 'px';
+                    }
 
                     if (setting.animateClass && typeof setting.animateClass === 'string'){
                         targetLayer.addClass(setting.animateClass);
@@ -200,16 +227,19 @@ define(['jquery'],function($){
                     }
                    function shownBgAnimation () {
                         getDom("shownBg").animate({
-                            opacity: 'show' },200, 'easeOutExpo')
+                            opacity: 'show' },1, 'easeOutExpo')
                     }
                    function targetLayerAnimation () {
                         targetLayer.animate({
                             width: 'toggle',
                             height: 'toggle',
+                            left:'-='+ tW +'px',
+                            top:'-='+ tH +'px',
                             opacity: 'toggle'},200, 'easeInExpo', function(){
                             publicMethod.callBack(setting.callBackFn, obj, targetLayer);
                         })
                     }
+                    targetLayer.removeAttr('style').css(targetCss);
                     if(setting.maskLayer && setting.maskLayer == true){
                         var mask = this.maskLayer;
                         mask.removeAttr('style').css(styleOpts);
@@ -218,10 +248,12 @@ define(['jquery'],function($){
                             body.append(mask);
                             body.append(targetLayer);
                         }
+                        setting.animate ? targetLayerAnimation() : targetLayer.show();
                         setting.animate ? shownBgAnimation() : getDom("shownBg").show();
+                    } else {
+                        setting.animate ? targetLayerAnimation() : targetLayer.show();
                     }
-                    targetLayer.removeAttr('style').css(targetCss);
-                    setting.animate ? targetLayerAnimation() : targetLayer.show();
+
                     publicMethod.closeFn(targetLayer, unlockScroll, setting.animate);
                     break;
 
