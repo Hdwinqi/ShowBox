@@ -76,6 +76,7 @@ define(['jquery'],function($){
             maskLayer:false,
             speed:300,
             animate : false,
+            animateClassTarget:undefined,
             className:undefined,
             lockScroll:false
         };
@@ -142,9 +143,9 @@ define(['jquery'],function($){
                             left:'+='+ targetLayer.actual('outerWidth')/ 2 +'px',
                             top:'+='+ targetLayer.actual('outerHeight')/ 2 +'px',
                             opacity: 'toggle'
-                           } ,200, 'easeOutExpo');
+                           } ,300, 'easeOutCubic');
                         if (getDom("shownBg").length>0 && getDom("shownBg").is(':visible')) {
-                            getDom("shownBg").animate({opacity: ['hide', 'swing']},1, 'easeOutExpo');
+                            getDom("shownBg").animate({opacity: 'hide'},300, 'easeOutCubic');
                         }
                     };
                     var normalHide = function(){
@@ -157,6 +158,32 @@ define(['jquery'],function($){
                     }
                     e.stopPropagation();
                 });
+            },
+            toggleClass : function(obj,animateClass,isAdd,selfObj){
+
+                obj = selfObj ?  getDom(selfObj) : obj;
+                function changeClass(obj,animateClass,isAdd) {
+                    if (typeof animateClass === 'string') {
+                        if (isAdd) {
+                            obj.addClass(animateClass);
+                        } else {
+                            obj.removeClass(animateClass);
+                        }
+                    } else {
+                        if (isAdd) {
+
+                            obj.removeClass(animateClass[0]);
+                            obj.addClass(animateClass[1]);
+                        } else {
+                            //debugger;
+                            obj.removeClass(animateClass[1]);
+                            obj.addClass(animateClass[0]);
+                        }
+                    }
+                }
+                if (animateClass){
+                    changeClass(obj,animateClass,isAdd);
+                }
             }
         },
         toggleLayer : function(obj,opt){
@@ -227,7 +254,7 @@ define(['jquery'],function($){
                     }
                    function shownBgAnimation () {
                         getDom("shownBg").animate({
-                            opacity: 'show' },1, 'easeOutExpo')
+                            opacity: 'show' },300, 'easeOutCubic')
                     }
                    function targetLayerAnimation () {
                         targetLayer.animate({
@@ -235,7 +262,7 @@ define(['jquery'],function($){
                             height: 'toggle',
                             left:'-='+ tW +'px',
                             top:'-='+ tH +'px',
-                            opacity: 'toggle'},200, 'easeInExpo', function(){
+                            opacity: 'toggle'},300, 'easeOutCubic', function(){
                             publicMethod.callBack(setting.callBackFn, obj, targetLayer);
                         })
                     }
@@ -243,7 +270,7 @@ define(['jquery'],function($){
                     if(setting.maskLayer && setting.maskLayer == true){
                         var mask = this.maskLayer;
                         mask.removeAttr('style').css(styleOpts);
-                        //targetLayer.removeAttr('style').css(targetCss);
+                        targetLayer.removeAttr('style').css(targetCss);
                         if( targetLayer.parent()[0].nodeName !="BODY" &&  $('#shownBg').length === 0 ){
                             body.append(mask);
                             body.append(targetLayer);
@@ -262,14 +289,18 @@ define(['jquery'],function($){
                     if(evt=='mouseover'){
                         targetLayer.show();
                         publicMethod.callBack(setting.callBackFn,obj,targetLayer);
+                        publicMethod.toggleClass(obj,setting.animateClass,true, setting.animateClassTarget);
                         obj.off('mouseout').on('mouseout',function(e){
                             targetLayer.hide();
+                            //publicMethod.toggleClass(obj,setting.animateClass,false,setting.animateClassTarget);
                             e.stopPropagation();
                         });
                         targetLayer.hover(function(){
                             $(this).show();
+                            publicMethod.toggleClass(obj,setting.animateClass,true,setting.animateClassTarget);
                         },function(){
                             $(this).hide();
+                            publicMethod.toggleClass(obj,setting.animateClass,false,setting.animateClassTarget);
                         })
                     }else if(evt == 'click'){
                         targetLayer.toggle();
